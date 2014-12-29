@@ -130,6 +130,30 @@ char bin(char* g)
     return connector;
 }
 
+int binAdr(char* g)
+{
+    int brackets = 0, i = 0;
+    int connector = 0;
+    
+    while (!bc(connector))
+    {
+        if (*(g+i) == '(')
+        {
+            brackets++;
+        }
+        else if ( *(g+i) == ')')
+        {
+            brackets--;
+        }
+        else if (brackets == 1 && bc(*(g+i)))
+        {
+            connector = i;
+        }
+        i++;
+    }
+    return connector;
+}
+
 char* partOne(char* g)
 {
     int brackets = 0;
