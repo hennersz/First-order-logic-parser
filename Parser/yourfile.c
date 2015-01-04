@@ -132,10 +132,11 @@ char bin(char* g)
 
 int binAdr(char* g)
 {
-    int brackets = 0, i = 0;
+    int brackets = 0;
     int connector = 0;
+    long length = strlen(g);
     
-    while (!bc(connector))
+    for (int i = 0; i<length; i++)
     {
         if (*(g+i) == '(')
         {
@@ -149,11 +150,11 @@ int binAdr(char* g)
         {
             connector = i;
         }
-        i++;
     }
+    
     return connector;
 }
-
+/*
 char* partOne(char* g)
 {
     int brackets = 0;
@@ -211,7 +212,21 @@ char* partTwo(char* g)
     
     return segment(g, i, j);
 }
+*/
 
+char* partOne(char* g)
+{
+    int i = 1;
+    int j = binAdr(g);
+    return segment(g,i,j);
+}
+
+char* partTwo(char* g)
+{
+    int i = binAdr(g)+1;
+    int j = (int)strlen(g)-1;
+    return segment(g, i, j);
+}
 ////////////////////////formula type checkers/////////////////////////////////////////////
 
 int isAtom(char* g)
@@ -244,6 +259,10 @@ int isBin(char* g)
         if(bc(*(g+i)) && brackets==1)
         {
             binChar++;
+        }
+        if (brackets==0 && i<n-1)
+        {
+            return 0;
         }
     }
     if(brackets==0 && binChar==1)
@@ -358,22 +377,22 @@ int parse(char* g)
     }
 }
 
+void printString(char* string)
+{
+    for(int i = 0; i<strlen(string); i++)
+    {
+        printf("%c", *(string+i));
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 int main(void)
 {
     char *name=malloc(50);
     printf("Enter a formula:");
     scanf("%s", name);
-    char* test1 = partOne(name);
-    for (int i = 0; i<strlen(partOne(name)); i++)
-    {
-        printf("%c", *(test1+i));
-    }
-    char* test2 = partTwo(name);
-    for (int i = 0; i<strlen(partTwo(name)); i++)
-    {
-        printf("%c", *(test2+i));
-    }
+    printString(partOne(name));
+    printString(partTwo(name));
     printf("\n");
     return 0;
 }
