@@ -154,65 +154,6 @@ int binAdr(char* g)
     
     return connector;
 }
-/*
-char* partOne(char* g)
-{
-    int brackets = 0;
-    int i = 1;
-    int j = 1;
-    int found = 0;
-    while(!found)
-    {
-        if (*(g+j) == '(')
-        {
-            brackets++;
-        }
-        else if (*(g+j) == ')')
-        {
-            brackets--;
-        }
-        if (*(g+j) == bin(g) && brackets == 0)
-        {
-            found = 1;
-        }
-        else
-        {
-            j++;
-        }
-    }
-    return segment(g, i, j);
-}
-
-char* partTwo(char* g)
-{
-    int brackets = 0;
-    int i = 1;
-    int j = (int)strlen(g)-1;
-    int found = 0;
-    while(!found)
-    {
-        if (*(g+i) == '(')
-        {
-            brackets++;
-        }
-        else if (*(g+i) == ')')
-        {
-            brackets--;
-        }
-        if (*(g+j) == bin(g) && brackets == 0)
-        {
-            found = 1;
-        }
-        else
-        {
-           i++;
-        }
-    }
-    
-    
-    return segment(g, i, j);
-}
-*/
 
 char* partOne(char* g)
 {
