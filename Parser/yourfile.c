@@ -325,15 +325,44 @@ void printString(char* string)
         printf("%c", *(string+i));
     }
 }
+///////////////////////////////// formula evaluation ////////////////////////////////////////
 
-////////////////////////////////////////////////////////////////////////////////////////////
+int eval(char *fmla, int edges[no_edges][2], int size, int V[3])
+{
+    return 0;
+}
+
+int evalPred(char *fmla, int edges[no_edges][2], int size, int V[3])
+{
+    for (int i = 0; i < size; i++)
+    {
+        if(edges[i][0]==V[vartonum(varChar(*(fmla+2)))] && edges[i][1]==V[vartonum(varChar(*(fmla+3)))])
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+int no_edges;
 int main(void)
 {
     char *name=malloc(50);
     printf("Enter a formula:");
     scanf("%s", name);
-    printString(partOne(name));
-    printString(partTwo(name));
+    int p=parse(name);
+    switch(p)
+    {
+        case 0: printf("Not a formula");break;
+        case 1: printf("An atomic formula");break;
+        case 2: printf("A negated formula");break;
+        case 3: printf("A binary connective formula");break;
+        case 4: printf("An existential formula");break;
+        case 5: printf("A universal formula");break;
+        default: printf("Not a formula");break;
+    }
     printf("\n");
     return 0;
 }
