@@ -332,7 +332,7 @@ int eval(char *fmla, int edges[no_edges][2], int size, int V[3])
     return 0;
 }
 
-int evalPred(char *fmla, int edges[no_edges][2], int size, int V[3])
+int evalBound(char *fmla, int edges[no_edges][2], int size, int V[3])
 {
     for (int i = 0; i < size; i++)
     {
@@ -342,6 +342,10 @@ int evalPred(char *fmla, int edges[no_edges][2], int size, int V[3])
         }
     }
     return 0;
+}
+int evalPred(char *fmla, int edges[no_edges][2], int size, int V[3])
+{
+    return evalBound(fmla, edges, size, V);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
