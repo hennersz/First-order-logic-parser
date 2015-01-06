@@ -348,6 +348,29 @@ int evalPred(char *fmla, int edges[no_edges][2], int size, int V[3])
     return evalBound(fmla, edges, size, V);
 }
 
+int evalBin(char *fmla, int edges[no_edges][2], int size, int V[3])
+{
+    if (bin(fmla)=='^')
+    {
+        return (eval(partOne(fmla), edges, size, V)&&eval(partTwo(fmla), edges, size, V));
+    }
+    else if (bin(fmla)=='v')
+    {
+        return (eval(partOne(fmla), edges, size, V)|| eval(partTwo(fmla), edges, size, V));
+    }
+    else
+    {
+        if(eval(partOne(fmla), edges, size, V) && !eval(partTwo(fmla), edges, size, V))
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 int no_edges;
