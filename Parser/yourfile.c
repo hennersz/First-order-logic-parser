@@ -11,6 +11,9 @@
 #include <string.h>
 #include "yourfile.h"
 
+#define e -1
+#define a -2
+
 ///////////////////////////////////////////////////////////////
 
 char* segment(char* g, int i ,int j)
@@ -318,13 +321,7 @@ int parse(char* g)
     }
 }
 
-void printString(char* string)
-{
-    for(int i = 0; i<strlen(string); i++)
-    {
-        printf("%c", *(string+i));
-    }
-}
+
 ///////////////////////////////// formula evaluation ////////////////////////////////////////
 
 int eval(char *fmla, int edges[no_edges][2], int size, int V[3])
@@ -334,9 +331,11 @@ int eval(char *fmla, int edges[no_edges][2], int size, int V[3])
 
 int evalBound(char *fmla, int edges[no_edges][2], int size, int V[3])
 {
+    int startNode = V[vartonum(varChar(*(fmla+2)))];
+    int endNode = V[vartonum(varChar(*(fmla+3)))];
     for (int i = 0; i < size; i++)
     {
-        if(edges[i][0]==V[vartonum(varChar(*(fmla+2)))] && edges[i][1]==V[vartonum(varChar(*(fmla+3)))])
+        if(edges[i][0]==startNode && edges[i][1]==endNode)
         {
             return 1;
         }
@@ -352,11 +351,11 @@ int evalBin(char *fmla, int edges[no_edges][2], int size, int V[3])
 {
     if (bin(fmla)=='^')
     {
-        return (eval(partOne(fmla), edges, size, V)&&eval(partTwo(fmla), edges, size, V));
+        return (eval(partOne(fmla), edges, size, V) && eval(partTwo(fmla), edges, size, V));
     }
     else if (bin(fmla)=='v')
     {
-        return (eval(partOne(fmla), edges, size, V)|| eval(partTwo(fmla), edges, size, V));
+        return (eval(partOne(fmla), edges, size, V) || eval(partTwo(fmla), edges, size, V));
     }
     else
     {
@@ -371,7 +370,38 @@ int evalBin(char *fmla, int edges[no_edges][2], int size, int V[3])
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////
+int evalNeg(char *fmla, int edges[no_edges][2], int size, int V[3])
+{
+    char* rest = segment(fmla, 1, (int)strlen(fmla));
+    return(!eval(rest, edges, size, V));
+}
+
+int evalQuant(char *fmla, int edges[no_edges][2], int size, int V[3])
+{
+    return 0;
+}
+
+/////////////////////////////////////// Utility functions///////////////////////////////////////
+
+void printString(char* string)
+{
+    for(int i = 0; i<strlen(string); i++)
+    {
+        printf("%c", *(string+i));
+    }
+}
+
+int* copyVars(int* old)
+{
+    int* new = malloc(sizeof(int)*3);
+    for (int i = 0; i<3; i++)
+    {
+        *(new+i)= *(old+i);
+    }
+    return new;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 int no_edges;
 int main(void)
