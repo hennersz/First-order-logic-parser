@@ -14,6 +14,26 @@
 #define e -1
 #define a -2
 
+/////////////////////////////////////// Utility functions///////////////////////////////////////
+
+void printString(char* string)
+{
+    for(int i = 0; i<strlen(string); i++)
+    {
+        printf("%c", *(string+i));
+    }
+}
+
+int* copyVars(int* old)
+{
+    int* new = malloc(sizeof(int)*3);
+    for (int i = 0; i<3; i++)
+    {
+        *(new+i)= *(old+i);
+    }
+    return new;
+}
+
 ///////////////////////////////////////////////////////////////
 
 char* segment(char* g, int i ,int j)
@@ -342,6 +362,11 @@ int evalBound(char *fmla, int edges[no_edges][2], int size, int V[3])
     }
     return 0;
 }
+
+int evalEE(char *fmla, int edges[no_edges][2], int size, int V[3])
+{
+    
+}
 int evalPred(char *fmla, int edges[no_edges][2], int size, int V[3])
 {
     return evalBound(fmla, edges, size, V);
@@ -376,29 +401,36 @@ int evalNeg(char *fmla, int edges[no_edges][2], int size, int V[3])
     return(!eval(rest, edges, size, V));
 }
 
+int evalE(char *fmla, int edges[no_edges][2], int size, int V[3])
+{
+    int var = vartonum(*(fmla+1));
+    int* newV = copyVars(V);
+    *(newV+var)=e;
+    int fmlaLength = (int)strlen(fmla);
+    char* rest = segment(fmla, 2, fmlaLength);
+    return eval(rest, edges, size, newV);
+}
+
+int evalA(char *fmla, int edges[no_edges][2], int size, int V[3])
+{
+    int var = vartonum(*(fmla+1));
+    int* newV = copyVars(V);
+    *(newV+var)=a;
+    int fmlaLength = (int)strlen(fmla);
+    char* rest = segment(fmla, 2, fmlaLength);
+    return eval(rest, edges, size, newV);
+}
+
 int evalQuant(char *fmla, int edges[no_edges][2], int size, int V[3])
 {
-    return 0;
-}
-
-/////////////////////////////////////// Utility functions///////////////////////////////////////
-
-void printString(char* string)
-{
-    for(int i = 0; i<strlen(string); i++)
+    if(*fmla == 'A')
     {
-        printf("%c", *(string+i));
+        return evalA(fmla, edges, size, V);
     }
-}
-
-int* copyVars(int* old)
-{
-    int* new = malloc(sizeof(int)*3);
-    for (int i = 0; i<3; i++)
+    else
     {
-        *(new+i)= *(old+i);
+        return evalE(fmla, edges, size, V);
     }
-    return new;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
