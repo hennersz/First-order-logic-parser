@@ -14,6 +14,8 @@
 #define e -1
 #define a -2
 
+int no_edges;
+
 /////////////////////////////////////// Utility functions///////////////////////////////////////
 
 void printString(char* string)
@@ -39,7 +41,7 @@ int* copyVars(int* old)
 char* segment(char* g, int i ,int j)
 {
     int length = j-i;
-    char* section = (char*)malloc(sizeof(char)*length);
+    char* section = malloc(sizeof(char)*length);
     
     for (int x = 0; x < length; x++)
     {
@@ -344,16 +346,13 @@ int parse(char* g)
 
 ///////////////////////////////// formula evaluation ////////////////////////////////////////
 
-int eval(char *fmla, int edges[no_edges][2], int size, int V[3])
-{
-    return 0;
-}
+
 
 int evalBound(char *fmla, int edges[no_edges][2], int size, int V[3])
 {
     int startNode = V[vartonum(varChar(*(fmla+2)))];
     int endNode = V[vartonum(varChar(*(fmla+3)))];
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < no_edges; i++)
     {
         if(edges[i][0]==startNode && edges[i][1]==endNode)
         {
@@ -363,13 +362,78 @@ int evalBound(char *fmla, int edges[no_edges][2], int size, int V[3])
     return 0;
 }
 
-int evalEE(char *fmla, int edges[no_edges][2], int size, int V[3])
+int evalEB(char *fmla, int edges[no_edges][2], int size, int V[3])
 {
+    int boundVar, boundVarAddress, unboundVarAddress;
+    if(V[vartonum(varChar(*(fmla+2)))]==e)
+    {
+        boundVar = V[vartonum(varChar(*(fmla+3)))];
+        boundVarAddress = 1;
+        unboundVarAddress = 0;
+    }
+    else
+    {
+        boundVar = V[vartonum(varChar(*(fmla+2)))];
+        boundVarAddress = 0;
+        unboundVarAddress = 1;
+    }
     
+    for(int unboundVar = 0; unboundVar<size; unboundVar++)
+    {
+        for (int i = 0; i < no_edges; i++)
+        {
+            if(edges[i][boundVarAddress]==boundVar && edges[i][unboundVarAddress]==unboundVar)
+            {
+                return 1;
+            }
+        }
+    }
+    return 0;
 }
+
+int evalAB(char *fmla, int edges[no_edges][2], int size, int V[3])
+{
+    int boundVar, boundVarAddress, unboundVarAddress;
+    if(V[vartonum(varChar(*(fmla+2)))]==a)
+    {
+        boundVar = V[vartonum(varChar(*(fmla+3)))];
+        boundVarAddress = 1;
+        unboundVarAddress = 0;
+    }
+    else
+    {
+        boundVar = V[vartonum(varChar(*(fmla+2)))];
+        boundVarAddress = 0;
+        unboundVarAddress = 1;
+    }
+    
+    for(int unboundVar = 0; unboundVar<size; unboundVar++)
+    {
+        for (int i = 0; i < no_edges; i++)
+        {
+            if(!(edges[i][boundVarAddress]==boundVar && edges[i][unboundVarAddress]==unboundVar))
+            {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
 int evalPred(char *fmla, int edges[no_edges][2], int size, int V[3])
 {
-    return evalBound(fmla, edges, size, V);
+    if(V[vartonum(varChar(*(fmla+2)))] == e || V[vartonum(varChar(*(fmla+3)))] == e)
+    {
+        return evalEB(fmla, edges, size, V);
+    }
+    else if(V[vartonum(varChar(*(fmla+2)))] == a || V[vartonum(varChar(*(fmla+3)))] == a)
+    {
+        return evalAB(fmla, edges, size, V);
+    }
+    else
+    {
+        return evalBound(fmla, edges, size, V);
+    }
 }
 
 int evalBin(char *fmla, int edges[no_edges][2], int size, int V[3])
@@ -433,25 +497,26 @@ int evalQuant(char *fmla, int edges[no_edges][2], int size, int V[3])
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////
-
-int no_edges;
-int main(void)
+int eval(char *fmla, int edges[no_edges][2], int size, int V[3])
 {
-    char *name=malloc(50);
-    printf("Enter a formula:");
-    scanf("%s", name);
-    int p=parse(name);
-    switch(p)
+    if (isAtom(fmla))
     {
-        case 0: printf("Not a formula");break;
-        case 1: printf("An atomic formula");break;
-        case 2: printf("A negated formula");break;
-        case 3: printf("A binary connective formula");break;
-        case 4: printf("An existential formula");break;
-        case 5: printf("A universal formula");break;
-        default: printf("Not a formula");break;
+        return evalPred(fmla, edges, size, V);
     }
-    printf("\n");
-    return 0;
+    else if (isBin(fmla))
+    {
+        return evalBin(fmla, edges, size, V);
+    }
+    else if (isNegation(fmla))
+    {
+        return evalNeg(fmla, edges, size, V);
+    }
+    else if (isQuantifier(fmla))
+    {
+        return evalQuant(fmla, edges, size, V);
+    }
+    else
+    {
+        return 0;
+    }
 }
