@@ -465,6 +465,8 @@ int evalNeg(char *fmla, int edges[no_edges][2], int size, int V[3])
     return(!eval(rest, edges, size, V));
 }
 
+
+
 int evalE(char *fmla, int edges[no_edges][2], int size, int V[3])
 {
     int var = vartonum(*(fmla+1));
@@ -519,4 +521,11 @@ int eval(char *fmla, int edges[no_edges][2], int size, int V[3])
     {
         return 0;
     }
+}
+
+int main()
+{
+    char formula[] = "X[xy]";
+    int edges[][2] = {{0,1}};
+    
 }
