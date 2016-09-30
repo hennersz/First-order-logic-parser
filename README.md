@@ -1,6 +1,8 @@
 # Parser
 A first order lorgic parser
 
+If you are a first year UCL student doing your logic coursework and found this useful consider starring it.
+
 This will parse formulas defined by 
 φ::=X[ts]| −φ|(φ◦φ)|Ezφ|Azφ
 where ◦ is a binary connective, t, s, z are variables. E and A are the unversal quantifiers.
